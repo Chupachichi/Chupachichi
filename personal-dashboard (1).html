@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tu Planta Virtual</title>
+        <link rel="stylesheet" href="diseño.css">
+    </head>
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dashboard Personal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h1, h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .plant-container {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 1rem;
+        }
+
+        .plant {
+            font-size: 4rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .plant:hover {
+            transform: scale(1.1);
+        }
+
+        .plant.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .level-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #4299e1;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #edf2f7;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #68d391;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        button {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        .level-up {
+            animation: levelUp 0.5s ease-out;
+        }
+
+        @keyframes levelUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .daily-event {
+            padding: 1rem;
+            text-align: center;
+            background: rgba(66, 153, 225, 0.1);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card fade-in">
+            <h1 id="greeting">¡Hola!</h1>
+            <div id="dailyEvent" class="daily-event">
+                Cargando evento diario...
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <h2>Tu Planta Virtual</h2>
+            <div class="plant-container">
+                <div class="plant" id="plantWrapper">
+                    <div id="plant">🌱</div>
+                    <div class="level-badge" id="levelBadge">1</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="plantProgress" class="progress"></div>
+                </div>
+                <p>Nivel: <span id="plantLevel">1</span></p>
+                <button onclick="waterPlant()" id="waterButton">Regar planta 💧</button>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <h2>Tus Estadísticas</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <span>Visitas totales:</span>
+                    <span id="visitCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Última visita:</span>
+                    <span id="lastVisit">Primera vez</span>
+                </div>
+                <div class="stat-item">
+                    <span>Riegos totales:</span>
+                    <span id="waterCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Nivel más alto:</span>
+                    <span id="maxLevel">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funciones de utilidad
+        const getLocalStorage = (key, defaultValue) => {
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : defaultValue;
+        };
+
+        const setLocalStorage = (key, value) => {
+            localStorage.setItem(key, JSON.stringify(value));
+        };
+
+        // Array de emojis de plantas y flores
+        const plantEmojis = [
+            '🌱', '🌿', '🌵', '🌴', '🌳', '🌲', // Plantas
+            '🌺', '🌸', '🌼', '🌻', '🌹', '💐', // Flores
+            '🌷', '🌾', '🍀', '🌿', '🌵', '🎋', // Más plantas
+            '🌻', '🌹', '🌷', '🌼', '🌸', '🌺'  // Más flores
+        ];
+
+        // Inicialización de datos
+        let stats = getLocalStorage('stats', {
+            visits: 0,
+            lastVisit: null,
+            waterCount: 0,
+            plantLevel: 1,
+            plantProgress: 0,
+            maxLevel: 1
+        });
+
+        // Actualizar estadísticas de visita
+        stats.visits += 1;
+        stats.lastVisit = new Date().toLocaleDateString();
+        setLocalStorage('stats', stats);
+
+        // Saludo personalizado según la hora
+        const getGreeting = () => {
+            const hour = new Date().getHours();
+            return hour < 12 ? '¡Buenos días!' :
+                   hour < 20 ? '¡Buenas tardes!' :
+                   '¡Buenas noches!';
+        };
+
+        // Eventos diarios
+        const dailyEvents = [
+            "¡Sigue regando tu planta para descubrir nuevas especies! 🌿",
+            "¡Cada nivel trae una nueva sorpresa! 🎉",
+            "Tu jardín virtual crece sin límites 🌱",
+            "¿Cuántos niveles podrás alcanzar hoy? 🌺",
+            "¡Cultiva tu jardín infinito! 🌸",
+            "Las plantas más raras aparecen en niveles altos 🌷",
+            "¡Descubre todas las especies posibles! 🍀"
+        ];
+
+        const getDailyEvent = () => {
+            const today = new Date().toDateString();
+            const savedEvent = getLocalStorage('dailyEvent', {});
+            
+            if (savedEvent.date === today) {
+                return savedEvent.message;
+            }
+            
+            const newEvent = dailyEvents[Math.floor(Math.random() * dailyEvents.length)];
+            setLocalStorage('dailyEvent', {
+                date: today,
+                message: newEvent
+            });
+            return newEvent;
+        };
+
+        // Sistema de planta
+        const getPlantEmoji = (level) => {
+            // Usar el módulo para ciclar a través de los emojis
+            return plantEmojis[(level - 1) % plantEmojis.length];
+        };
+
+        const waterPlant = () => {
+            const plantWrapper = document.getElementById('plantWrapper');
+            const button = document.getElementById('waterButton');
+            
+            button.disabled = true;
+            plantWrapper.classList.add('shake');
+            
+            setTimeout(() => {
+                plantWrapper.classList.remove('shake');
+                button.disabled = false;
+                
+                stats.waterCount += 1;
+                stats.plantProgress += 33.33;
+                
+                if (stats.plantProgress >= 100) {
+                    stats.plantProgress = 0;
+                    stats.plantLevel += 1;
+                    stats.maxLevel = Math.max(stats.maxLevel, stats.plantLevel);
+                    plantWrapper.classList.add('level-up');
+                    setTimeout(() => plantWrapper.classList.remove('level-up'), 500);
+                }
+                
+                setLocalStorage('stats', stats);
+                updateUI();
+            }, 500);
+        };
+
+        // Actualizar interfaz
+        const updateUI = () => {
+            document.getElementById('greeting').textContent = getGreeting();
+            document.getElementById('dailyEvent').textContent = getDailyEvent();
+            document.getElementById('visitCount').textContent = stats.visits;
+            document.getElementById('lastVisit').textContent = stats.lastVisit;
+            document.getElementById('waterCount').textContent = stats.waterCount;
+            document.getElementById('plantLevel').textContent = stats.plantLevel;
+            document.getElementById('maxLevel').textContent = stats.maxLevel;
+            document.getElementById('levelBadge').textContent = stats.plantLevel;
+            document.getElementById('plant').textContent = getPlantEmoji(stats.plantLevel);
+            document.getElementById('plantProgress').style.width = `${stats.plantProgress}%`;
+        };
+
+        // Inicializar UI
+        updateUI();
+    </script>
+</body>
+</html>
